@@ -21,20 +21,20 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Install SDK platform, build-tools, NDK and CMake
+      - name: Accept Android Licenses & Install Components
         run: |
-          SDKMANAGER="${ANDROID_SDK_ROOT:-$ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
-          yes | "$SDKMANAGER" "platforms;android-33" "build-tools;34.0.0" "ndk;25.1.8937393" "cmake;3.22.1"
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-33" "build-tools;34.0.0" "ndk;25.1.8937393" "cmake;3.22.1"
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build with Gradle
         run: ./gradlew assembleDebug --stacktrace
-        
+
       - name: Upload APK Artifact
-       uses: actions/upload-artifact@v4
-      with:
-        name: Stryker-4.5R-APK
-        path: app/build/outputs/apk/debug/*.apk
-        
+        uses: actions/upload-artifact@v4
+        with:
+          name: Stryker-4.5R-APK
+          path: app/build/outputs/apk/debug/*.apk
+          
